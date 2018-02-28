@@ -182,6 +182,14 @@ def run_pycodestyle(ghrequest, config):
         stdout, _ = proc.communicate()
         ghrequest.extra_results[filename] = stdout.decode(r.encoding).splitlines()
 
+        # Use the command line here as well
+        cmd = ['pycodestyle',
+               '{config[pydocstyle_cmd_config]}'.format(config=config),
+               'file_to_check.py']
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        stdout, _ = proc.communicate()
+        ghrequest.extra_results[filename] = stdout.decode(r.encoding).splitlines()
+
         # Put only relevant errors in the ghrequest.results dictionary
         ghrequest.results[filename] = []
         for error in list(ghrequest.extra_results[filename]):
